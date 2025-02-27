@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator</title>
+    <!-- Bootstrap 5 CSS from CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Animate.css for animations -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff9a9e;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-weight: bold;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .creator {
+            font-style: italic;
+            opacity: 0.8;
+        }
+        
+        .custom-input {
+            border-radius: 25px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .custom-input:focus {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(1.02);
+        }
+        
+        .gradient-button {
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            border-radius: 25px;
+            border: none;
+            color: #343a40;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .gradient-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .coffee-button {
+            background: linear-gradient(to right, #ffdd00, #fbb034);
+            color: #5a3921;
+            font-weight: bold;
+            border-radius: 25px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .coffee-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        img.result-image {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        img.result-image:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <header class="text-center mb-5">
+            <h1 class="display-4 animate__animated animate__fadeIn">
+                <i class="fas fa-magic me-2"></i>AI Image Generator
+            </h1>
+            <div class="creator animate__animated animate__fadeIn">
+                Created with <i class="fas fa-heart text-danger"></i> by uffxaazi
+            </div>
+        </header>
+        
+        <div class="glass-card p-4 p-md-5 mb-5 animate__animated animate__fadeInUp">
+            <p class="lead text-center mb-4">
+                Transform your ideas into stunning visuals with our AI-powered image generator.
+                Simply type your prompt below and watch the magic happen!
+            </p>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="input-group mb-4">
+                        <input type="text" id="prompt" class="form-control custom-input py-3" 
+                               placeholder="Describe the image you want to create...">
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button onclick="generateImage()" class="btn gradient-button py-3">
+                            Generate Magic <i class="fas fa-wand-magic-sparkles ms-2"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="text-center mt-4" id="loading" style="display: none;">
+                        <div class="spinner-border text-light" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    
+                    <div id="result" class="mt-4 text-center"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="glass-card p-4 p-md-5 text-center animate__animated animate__fadeInUp">
+            <h2 class="mb-3 text-warning">Support This Project</h2>
+            <p>If you enjoy using this tool, please consider supporting the creator!</p>
+            <button class="btn coffee-button py-2 px-4">
+                <i class="fas fa-mug-hot me-2"></i> Buy Me a Coffee
+            </button>
+            <p class="mt-3 mb-0">Thank you for your support! It helps keep this project running and improving.</p>
+        </div>
+        
+        <footer class="text-center mt-5 opacity-75">
+            <p>Thank you for using our AI Image Generator! Share your creations with <span class="text-info">#AIImageGenerator</span></p>
+        </footer>
+    </div>
+    
+    <!-- Bootstrap JS from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <script>
+        async function generateImage() {
+            const prompt = document.getElementById("prompt").value;
+            if (!prompt) {
+                alert("Please enter a prompt first!");
+                return;
+            }
+            
+            // Show loading animation
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("result").innerHTML = "";
+            
+            try {
+                const url = `https://1yjs1yldj7.execute-api.us-east-1.amazonaws.com/default/ai_image?prompt=${encodeURIComponent(prompt)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Hide loading animation
+                document.getElementById("loading").style.display = "none";
+                
+                if (data.status === "success") {
+                    // Use animate.css for a fade-in effect
+                    const imageHtml = `<img src="${data.image_link}" alt="Generated Image" class="img-fluid result-image animate__animated animate__fadeIn">`;
+                    
+                    // Add some animation using jQuery
+                    $("#result").html(imageHtml);
+                } else {
+                    $("#result").html(`
+                        <div class="alert alert-danger animate__animated animate__shakeX" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i> 
+                            Image generation failed. Please try again with a different prompt.
+                        </div>
+                    `);
+                }
+            } catch (error) {
+                document.getElementById("loading").style.display = "none";
+                $("#result").html(`
+                    <div class="alert alert-danger animate__animated animate__shakeX" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i> 
+                        An error occurred. Please check your connection and try again.
+                    </div>
+                `);
+            }
+        }
+    </script>
+</body>
+</html>
