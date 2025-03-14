@@ -70,6 +70,24 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
         
+        .download-button {
+            background: linear-gradient(to right, #20bf55, #01baef);
+            border-radius: 25px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            max-width: 250px;
+            display: none;
+        }
+        
+        .download-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
         .coffee-button {
             background: linear-gradient(to right, #ffdd00, #fbb034);
             color: #5a3921;
@@ -175,6 +193,12 @@
                     </div>
                     
                     <div id="result" class="mt-4 text-center"></div>
+                    
+                    <div class="d-flex justify-content-center">
+                        <button id="download-btn" class="btn download-button py-2 px-4 animate__animated animate__fadeIn">
+                            <i class="fas fa-download me-2"></i> Download Image
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -211,12 +235,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     
     <script>
+        let currentImageUrl = '';
+        
         async function generateImage() {
             const prompt = document.getElementById("prompt").value;
             if (!prompt) {
                 alert("Please enter a prompt first!");
                 return;
             }
+            
+            // Hide download button if visible from previous generation
+            document.getElementById("download-btn").style.display = "none";
             
             // Show loading animation
             document.getElementById("loading").style.display = "block";
@@ -231,11 +260,20 @@
                 document.getElementById("loading").style.display = "none";
                 
                 if (data.status === "success") {
-                    // Use animate.css for a fade-in effect
-                    const imageHtml = `<img src="${data.image_link}" alt="Generated Image" class="img-fluid result-image animate__animated animate__fadeIn">`;
+                    // Store the current image URL
+                    currentImageUrl = data.image_link;
                     
-                    // Add some animation using jQuery
+                    // Use animate.css for a fade-in effect
+                    const imageHtml = `<img src="${currentImageUrl}" alt="Generated Image" class="img-fluid result-image animate__animated animate__fadeIn">`;
+                    
+                    // Add image to the page
                     $("#result").html(imageHtml);
+                    
+                    // Show download button with animation
+                    setTimeout(() => {
+                        const downloadBtn = document.getElementById("download-btn");
+                        downloadBtn.style.display = "inline-block";
+                    }, 500);
                 } else {
                     $("#result").html(`
                         <div class="alert alert-danger animate__animated animate__shakeX" role="alert">
@@ -253,6 +291,30 @@
                     </div>
                 `);
             }
+        }
+        
+        // Set up download button event handler
+        document.getElementById("download-btn").addEventListener("click", function() {
+            if (currentImageUrl) {
+                downloadImage(currentImageUrl, "ai-generated-image.jpg");
+            }
+        });
+        
+        // Function to download the image
+        function downloadImage(url, filename) {
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = filename;
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                })
+                .catch(error => {
+                    console.error("Download failed:", error);
+                    alert("Download failed. Please try again.");
+                });
         }
     </script>
 </body>
