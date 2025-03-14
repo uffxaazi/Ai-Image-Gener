@@ -1,2 +1,2 @@
 # Ai-Image-Gener
-Aazi
+VISIT HERE 😁🫶https://uffxaazi.github.io/Ai-Image-Gener/
